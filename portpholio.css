@@ -1,0 +1,151 @@
+
+body {
+  background-color: rgb(0, 0, 0);
+  /* background-color: #808080; */
+}
+
+
+
+.titleBarDiv {
+  display: inline-block;
+  width: 100%;
+  height: 50;
+  border-bottom: 0.5px solid white;
+}
+
+
+.projectButtonsDiv {
+  display: inline-block;
+  width: 100%;
+  height: 50;
+
+}
+
+.title{
+  width: 50%;
+  /* height: 100%; */
+  float: left;
+  text-align: left;
+  padding: 9 0 0 20;
+
+}
+.year{
+  width: 50%;
+  /* height: 100%; */
+  float: right;
+  text-align: right;
+  padding: 9 20 0 0;
+}
+
+h4 {
+  color: white;
+  font-family: "Menlo";
+}
+
+p {
+  padding: 20;
+  color: white;
+  font-size: 20;
+  text-align: left;
+  font-family: "Menlo";
+}
+
+h1 {
+  padding: 20;
+  color: white;
+  text-align: left;
+  font-size: 64;
+  font-family: "Arial";
+}
+
+
+#caroselDiv {
+  width: 50%;
+  height: 50%;
+}
+
+#logoDiv { 
+  padding: 10;
+}
+
+#leftContainer {
+  position: relative;
+  float: left;
+  height: 100%;
+  /* background-color: black; */
+  border-right: 0.5px solid white;
+  
+}
+
+.nav {
+  height: 20%;
+  width: 100%;
+  /* position: absolute; */
+  bottom: 0;
+  background-color: #808080;
+}
+.navButton {
+  width: 100%;
+  height: 29;
+  padding: 0 20;
+
+}
+
+#rightContainer {
+  float: left;
+  height: 100%;
+  /* background-color: blue; */
+  
+}
+
+
+
+
+
+
+#frame {
+  width: 100%;
+  height: 960px;
+  overflow: hidden;
+  position: relative;
+  /* border: 0.5px solid white; */
+}
+
+#project {
+  width: 1210;
+  height: 680;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  /* border: 0.5px solid white; */
+}
+
+.block {
+  border-radius: 15px;
+  border: 1px solid white;
+}
+
+#didacticDiv  {
+  width: 500;
+  height: 680;
+  float: left;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: center;
+  scrollbar-color: purple;
+  scrollbar-width: thin;
+}
+
+#caroselDiv {
+  width: 680;
+  height: 680;
+  overflow: hidden;
+  float: right;
+}
+
+.slide {
+  width: 680;
+  height: 680;
+}
