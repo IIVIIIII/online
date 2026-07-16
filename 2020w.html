@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2020 Weathering</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F5F5;
+      color: #111;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      padding: 26px 48px;
+      border-bottom: 1px solid #d9d9d9;
+      flex-shrink: 0;
+    }
+
+    .nav a {
+      color: #444;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav a:hover { color: #111; }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      display: grid;
+      grid-template-columns: 8fr 9fr;
+      grid-template-rows: 1fr;
+      gap: 0;
+      flex: 1;
+      min-height: 0;
+      padding: 0 46px 46px;
+    }
+
+    /* ── SLIDESHOW ── */
+    .slideshow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-right: 48px;
+      border-right: 1px solid #d9d9d9;
+      padding-top: 38px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .title-portrait { display: none; }
+
+    .video-container {
+      position: relative;
+      background: transparent;
+      flex: 1;
+      min-height: 0;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .slide-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .slide-btn {
+      background: none;
+      border: 1px solid #888;
+      color: #111;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    .slide-btn:hover:not(:disabled) { border-color: #111; }
+    .slide-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .slide-counter {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: #555;
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #999;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .dot.active { background: #111; }
+
+    /* ── CAPTION PANEL ── */
+    .caption-panel {
+      padding: 48px 0 48px 88px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Static title — pinned at top */
+    .caption-header {
+      flex-shrink: 0;
+      padding-right: 24px;
+      padding-bottom: 36px;
+    }
+
+    .caption-header .piece-title {
+      font-size: 32px;
+      font-style: italic;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .caption-header .piece-year {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: #555;
+    }
+
+    /* Scrollable caption area */
+    .caption-scroll-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .caption-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 24px;
+      padding-bottom: 48px;
+      max-width: 600px;
+    }
+
+    /* Fade-out indicator */
+    .scroll-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, #F5F5F5);
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .scroll-fade.hidden { opacity: 0; }
+
+    .caption-note {
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.85;
+      color: #999;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .caption-text {
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #111;
+    }
+
+    .caption-text p { margin-bottom: 0; }
+
+    .act-label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+
+    /* ── PORTRAIT ── */
+    @media (orientation: portrait) {
+      body { height: auto; overflow: auto; }
+
+      .nav { padding: 20px 24px; }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        padding: 0 24px 48px;
+        min-height: unset;
+      }
+
+      .slideshow {
+        flex: none;
+        min-height: unset;
+        overflow: visible;
+        padding-right: 0;
+        padding-top: 28px;
+        padding-bottom: 24px;
+        gap: 14px;
+        border-right: none;
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .video-container {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .title-portrait {
+        display: block;
+        flex-shrink: 0;
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .title-portrait .piece-title {
+        font-size: 30px;
+        font-style: italic;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .title-portrait .piece-year {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        color: #555;
+      }
+
+      .title-landscape { display: none; }
+
+      .caption-panel {
+        flex: none;
+        min-height: unset;
+        padding: 32px 0 0;
+      }
+
+      .caption-header { display: none; }
+
+      .caption-scroll-wrap {
+        position: static;
+        overflow: visible;
+      }
+
+      .caption-scroll {
+        height: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 0;
+        max-width: 100%;
+      }
+
+      .scroll-fade { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html#works">&#8592; Works</a>
+  </nav>
+
+  <main class="content">
+
+    <section class="slideshow">
+
+      <div class="title-portrait">
+        <h1 class="piece-title">2020 Weathering</h1>
+        <div class="piece-year">2021&#8211;2022</div>
+      </div>
+
+      <div class="video-container">
+        <video id="mainVideo" controls autoplay muted playsinline>
+          <source src="media/2020W/2020W1.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide-dots" id="dots"></div>
+
+      <div class="slide-controls">
+        <button class="slide-btn" id="prevBtn" disabled>Prev</button>
+        <span class="slide-counter" id="counter">1 / 9</span>
+        <button class="slide-btn" id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <aside class="caption-panel">
+
+      <div class="caption-header title-landscape">
+        <h1 class="piece-title">2020 Weathering</h1>
+        <div class="piece-year">2021&#8211;2022</div>
+      </div>
+
+      <div class="caption-scroll-wrap">
+        <div class="caption-scroll" id="captionScroll">
+          <p class="caption-note">(This is documentation of a test run and not the piece itself)</p>
+          <div class="caption-text">
+            <p>2020 Weathering is an installation and data sonification piece. It investigates the effects of the Covid-19 pandemic as experienced by six major ethnic and racial demographics within the US. The effect is a disorienting series of shifts between perspectives informed by discrepant experiences. These perspectives, woven into simultaneous perception, depict core conflicts between the lived reality of the United States and its proclaimed values.</p>
+
+            <span class="act-label">[1] Inspiration</span>
+            <p>1. The Covid-19 pandemic which forced the world into isolation.<br><br>
+            2. The discourse surrounding 2020&#8217;s protests for racial justice and their subsequent backlash.<br><br>
+            3. Documented racial disparities in infection and death rates of Covid-19 in the United States.<br><br>
+            4. The expanded role of technology during the pandemic as a means of achieving human connection.</p>
+
+            <span class="act-label">[2] Installation</span>
+            <p>The piece involves six laptop computers in a circle facing a shared center where the audience resides. The laptops display live streams of each other&#8217;s web cams with one (frequently changing) stream being emphasized by all laptops. Each computer refers to a different racial/ethnic demographic whose algorithmically generated audio and video output present a researched distribution of cases, deaths, and community vulnerabilities across the six groups.</p>
+
+            <span class="act-label">[3] Basic Rules</span>
+            <p>1. Each note a laptop plays represents a symptomatic case within its assigned demographic (not all cases are symptomatic).<br><br>
+            2. All cases, symptomatic or otherwise, can infect other computers with respect to each community&#8217;s likelihood of being infected (weighted by population).<br><br>
+            3. If multiple laptops exhibit cases at the same time, the algorithm will defer to each community&#8217;s CCVI score to decide which laptop&#8217;s webcam is displayed. The most vulnerable communities are least likely to receive priority.<br><br>
+            4. The death toll in a community is indicated by distortion in their laptop&#8217;s audio and video output.</p>
+
+            <span class="act-label">[4] Probability</span>
+            <p>All probabilities are calculated by cross referencing data from the US Census, The Atlantic&#8217;s Covid Tracking Project, and Surge Venture&#8217;s CCVI measurements. Data is collected on a state level and the piece can be run for any state that provided the necessary data. Demographics are unlabeled within the installation to avoid framing the piece as a stylized exhibition of any particular community&#8217;s suffering.</p>
+          </div>
+        </div>
+        <div class="scroll-fade" id="scrollFade"></div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script>
+    const slides = [
+      'media/2020W/2020W1.mp4',
+      'media/2020W/2020W2.mp4',
+      'media/2020W/2020W3.mp4',
+      'media/2020W/2020W4.mp4',
+      'media/2020W/2020W5.mp4',
+      'media/2020W/2020W6.mp4',
+      'media/2020W/2020W7.mp4',
+      'media/2020W/2020W8.mp4',
+      'media/2020W/2020W9.mp4',
+    ];
+
+    let current = 0;
+    let autoCycle = true;
+    const video = document.getElementById('mainVideo');
+    const videoContainer = document.querySelector('.video-container');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('counter');
+    const dotsEl = document.getElementById('dots');
+    const controlsEl = document.querySelector('.slide-controls');
+
+    function syncControlsWidth() {
+      const w = videoContainer.offsetWidth;
+      if (w > 0) {
+        dotsEl.style.width = w + 'px';
+        controlsEl.style.width = w + 'px';
+      }
+    }
+
+    function updateAspectRatio() {
+      if (video.videoWidth && video.videoHeight) {
+        videoContainer.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        requestAnimationFrame(syncControlsWidth);
+      }
+    }
+
+    video.addEventListener('loadedmetadata', updateAspectRatio);
+    if (video.readyState >= 1) updateAspectRatio();
+    window.addEventListener('resize', () => requestAnimationFrame(syncControlsWidth));
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => { autoCycle = false; goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    function goTo(index) {
+      current = index;
+      video.src = slides[current];
+      video.play().catch(() => {});
+      update();
+    }
+
+    function update() {
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    const captionScroll = document.getElementById('captionScroll');
+    const scrollFade = document.getElementById('scrollFade');
+
+    function checkFade() {
+      const atBottom = captionScroll.scrollHeight - captionScroll.scrollTop <= captionScroll.clientHeight + 2;
+      scrollFade.classList.toggle('hidden', atBottom);
+    }
+
+    captionScroll.addEventListener('scroll', checkFade);
+    window.addEventListener('resize', checkFade);
+    setTimeout(checkFade, 50);
+
+    video.addEventListener('ended', () => {
+      if (autoCycle) goTo((current + 1) % slides.length);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current - 1 + slides.length) % slides.length);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current + 1) % slides.length);
+    });
+  </script>
+</body>
+</html>

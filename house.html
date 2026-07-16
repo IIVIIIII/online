@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A House Is Not a Home</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F5F5;
+      color: #111;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      padding: 26px 48px;
+      border-bottom: 1px solid #d9d9d9;
+      flex-shrink: 0;
+    }
+
+    .nav a {
+      color: #444;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav a:hover { color: #111; }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      display: grid;
+      grid-template-columns: 8fr 9fr;
+      grid-template-rows: 1fr;
+      gap: 0;
+      flex: 1;
+      min-height: 0;
+      padding: 0 46px 46px;
+    }
+
+    /* ── SLIDESHOW ── */
+    .slideshow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-right: 48px;
+      border-right: 1px solid #d9d9d9;
+      padding-top: 38px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .title-portrait {
+      display: none;
+    }
+
+    .video-container {
+      position: relative;
+      background: transparent;
+      flex: 1;
+      min-height: 0;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .slide-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .slide-btn {
+      background: none;
+      border: 1px solid #888;
+      color: #111;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    .slide-btn:hover:not(:disabled) { border-color: #111; }
+    .slide-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .slide-counter {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: #555;
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #999;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .dot.active { background: #111; }
+
+    /* ── CAPTION PANEL ── */
+    .caption-panel {
+      padding: 48px 0 18px 88px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Static title — pinned at top */
+    .caption-header {
+      flex-shrink: 0;
+      padding-right: 24px;
+      padding-bottom: 36px;
+    }
+
+    .caption-header .piece-title {
+      font-size: 32px;
+      font-style: italic;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .caption-header .piece-year {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: #555;
+    }
+
+    /* Scrollable caption area */
+    .caption-scroll-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .caption-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 24px;
+      padding-bottom: 48px;
+      max-width: 600px;
+    }
+
+    /* Fade-out indicator */
+    .scroll-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, #F5F5F5);
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .scroll-fade.hidden { opacity: 0; }
+
+    .caption-text {
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #111;
+    }
+
+    .caption-text p { margin-bottom: 0; }
+
+    .act-label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+
+    .caption-text a {
+      color: #333;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .caption-text a:hover { color: #111; }
+
+    /* ── PORTRAIT ── */
+    @media (orientation: portrait) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .nav { padding: 20px 24px; }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        padding: 0 24px 48px;
+        min-height: unset;
+      }
+
+      .slideshow {
+        flex: none;
+        min-height: unset;
+        overflow: visible;
+        padding-right: 0;
+        padding-top: 28px;
+        padding-bottom: 24px;
+        gap: 14px;
+        border-right: none;
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .video-container {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .title-portrait {
+        display: block;
+        flex-shrink: 0;
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .title-portrait .piece-title {
+        font-size: 32px;
+        font-style: italic;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .title-portrait .piece-year {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        color: #555;
+      }
+
+      .caption-panel {
+        flex: none;
+        min-height: unset;
+        padding: 32px 0 0;
+      }
+
+      .caption-header { display: none; }
+
+      .caption-scroll-wrap {
+        position: static;
+        overflow: visible;
+      }
+
+      .caption-scroll {
+        height: auto;
+        overflow-y: visible;
+        padding-right: 0;
+        padding-bottom: 0;
+        max-width: 100%;
+      }
+
+      .scroll-fade { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html#works">&#8592; Works</a>
+  </nav>
+
+  <main class="content">
+
+    <section class="slideshow">
+
+      <div class="title-portrait">
+        <h1 class="piece-title">A House Is Not a Home</h1>
+        <div class="piece-year">2022</div>
+      </div>
+
+      <div class="video-container">
+        <video id="mainVideo" controls autoplay muted playsinline>
+          <source src="media/house/HINH1.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide-dots" id="dots"></div>
+
+      <div class="slide-controls">
+        <button class="slide-btn" id="prevBtn" disabled>Prev</button>
+        <span class="slide-counter" id="counter">1 / 9</span>
+        <button class="slide-btn" id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <aside class="caption-panel">
+
+      <!-- Static title (landscape only) -->
+      <div class="caption-header title-landscape">
+        <h1 class="piece-title">A House Is Not a Home</h1>
+        <div class="piece-year">2022</div>
+      </div>
+
+      <!-- Scrollable caption -->
+      <div class="caption-scroll-wrap">
+        <div class="caption-scroll" id="captionScroll">
+          <div class="caption-text">
+            <p>A House Is Not a Home is a collection by fashion designer Sam Fissell (<a href="https://www.instagram.com/samfissell/" target="_blank">@samfissell</a>) that I was commissioned to create a sound piece for. Fissell says of the collection: &#8220;The day-to-day experiences of living in different places have clothed and re-clothed who I am. By narrativizing my life in these cities, I explore the relationship between geography and self. This collection creates gestures of these places&#8217; essences, not in a literal way, but like painting a shadow of a building. My intent is not to depict the building but the memory of it, the impression of a building.&#8221; With a crucial emphasis on the designer&#8217;s Cambodian roots, I sought to convey their collection&#8217;s themes of heritage, memory, travel, and identity through my piece.</p>
+
+            <span class="act-label">Act I</span>
+            <p>Act I lingers on a performance of Cambodian court musicians&#8212; slowly scanning back and forth over the audio as though reminiscing over a memory. The resulting audio acts as the foundation for the entire piece.</p>
+
+            <span class="act-label">Act II</span>
+            <p>Act II uses a python script that was developed for this piece. It remaps the timing of notes in a midi file to synchronize with the model&#8217;s steps. In doing so, the progression of the piece is directly tied to travel in a literal sense.</p>
+
+            <span class="act-label">Act III</span>
+            <p>A sampler was created for Act III to simulate random walking paces within a set range. This allowed for an indeterminate composition process before knowing the exact step times of the models. It also served as a way to test which general tempos the models should be instructed to walk at. Ultimately, Act III conveys the multiplicity of the singular self after having been redefined many times through travel. These selves begin as separate, but gradually expand and overlap until they are indistinguishable.</p>
+
+            <p style="margin-top: 28px;">Full video available at:<br>
+            <a href="https://www.samfissell.com/projects/hinh" target="_blank">samfissell.com/projects/hinh</a></p>
+          </div>
+        </div>
+        <div class="scroll-fade" id="scrollFade"></div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script>
+    const slides = [
+      'media/house/HINH1.mp4',
+      'media/house/HINH2.mp4',
+      'media/house/HINH3.mp4',
+      'media/house/HINH4.mp4',
+      'media/house/HINH5.mp4',
+      'media/house/HINH6.mp4',
+      'media/house/HINH7.mp4',
+      'media/house/HINH8.mp4',
+      'media/house/HINH9.mp4',
+    ];
+
+    let current = 0;
+    let autoCycle = true;
+    const video = document.getElementById('mainVideo');
+    const videoContainer = document.querySelector('.video-container');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('counter');
+    const dotsEl = document.getElementById('dots');
+    const controlsEl = document.querySelector('.slide-controls');
+
+    function syncControlsWidth() {
+      const w = videoContainer.offsetWidth;
+      if (w > 0) {
+        dotsEl.style.width = w + 'px';
+        controlsEl.style.width = w + 'px';
+      }
+    }
+
+    function updateAspectRatio() {
+      if (video.videoWidth && video.videoHeight) {
+        videoContainer.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        requestAnimationFrame(syncControlsWidth);
+      }
+    }
+
+    video.addEventListener('loadedmetadata', updateAspectRatio);
+    if (video.readyState >= 1) updateAspectRatio();
+    window.addEventListener('resize', () => requestAnimationFrame(syncControlsWidth));
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => { autoCycle = false; goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    function goTo(index) {
+      current = index;
+      video.src = slides[current];
+      video.play().catch(() => {});
+      update();
+    }
+
+    function update() {
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    // Caption scroll fade
+    const captionScroll = document.getElementById('captionScroll');
+    const scrollFade = document.getElementById('scrollFade');
+
+    function checkFade() {
+      const atBottom = captionScroll.scrollHeight - captionScroll.scrollTop <= captionScroll.clientHeight + 2;
+      scrollFade.classList.toggle('hidden', atBottom);
+    }
+
+    captionScroll.addEventListener('scroll', checkFade);
+    window.addEventListener('resize', checkFade);
+    setTimeout(checkFade, 50);
+
+    video.addEventListener('ended', () => {
+      if (autoCycle) goTo((current + 1) % slides.length);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current - 1 + slides.length) % slides.length);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current + 1) % slides.length);
+    });
+  </script>
+</body>
+</html>

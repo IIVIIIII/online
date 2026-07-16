@@ -1,52 +1,268 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>IIVIIIII</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <link rel="stylesheet" href="piece.css" charset="utf-8">
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelvin Walls</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      background: #000;
+      color: #ffffff54;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── VIDEO BACKGROUND ── */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.75);
+      /* filter: saturate(1); */
+      transition: filter 0.4s;
+    }
+
+    .bg-video.dimmed { filter: brightness(0.25); }
+
+    /* ── HOME ── */
+    :root {
+      --side-pad: clamp(20px, 5.5vh, 56px);
+    }
+
+    .page {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(20px, 4.5vh, 48px) var(--side-pad);
+      transition: opacity 0.4s;
+    }
+
+    .page.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .name {
+      align-self: flex-start;
+      font-size: min(200px, calc((100vw - 2 * var(--side-pad)) / 3.3));
+      font-weight: normal;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    nav a {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      font-size: clamp(28px, 4vw, 42px);
+      font-style: italic;
+      line-height: 1.2;
+      width: fit-content;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+
+    nav a:hover { opacity: 0.5; }
+
+    @media (max-width: 860px) {
+      .name {
+        align-self: center;
+        text-align: center;
+      }
+    }
+
+    /* ── WORKS OVERLAY ── */
+    .works-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 48px 56px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+      overflow-y: auto;
+    }
+
+    .works-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .back-btn {
+      align-self: flex-start;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      padding: 0;
+    }
+
+    .back-btn:hover { opacity: 0.5; }
+
+    .works-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 48px;
+    }
+
+    .work-item {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      transition: opacity 0.2s;
+    }
+
+    .work-item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .work-item:hover { opacity: 0.3; }
+
+    .work-title {
+      display: block;
+      font-size: clamp(20px, 3vw, 36px);
+      font-style: italic;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .work-year {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #aaa;
+    }
+  </style>
+</head>
 <body>
 
-  <!-- <h1>Currently Under Maintenance</h1>
-  <a href="https://www.instagram.com/iiviiiiio/">Portfolio avaliable on instagram.</a> -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="media/bg.mp4" type="video/mp4">
+  </video>
 
-  <!-- <div style="width: 100%; height: 100%; position: relative; overflow-y: hidden; background: url('AK_background.gif'); background-position: center; background-size: auto 100%;"> -->
-  <div style="width: 100%; height: 100%; position: relative; overflow-y: hidden; background: url('https://drive.google.com/uc?export=view&id=16OOsJGSnMw4Wf3sKWxFUjPegNmSlIJBm'); background-position: center; background-size: auto 100%;">
-    <div style="text-align: center; margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);">
-    <h2 style="font-size: 55px; color: rgba(255, 255, 255, 0.25)">CURRENTLY UNDER MAINTENANCE </h2>
-      <p style="color: white; text-align: center;">Portfolio avaliable on instagram.</p>
-      <button onclick="location.href= 'https://www.instagram.com/iiviiiiio/';" style="font-size: 18px;
-      background-color: rgba(255, 255, 255, 0);
-      color: white;
-      border: 1px solid white;
-      border-radius: 15px;
-      padding: 5 10 5 10;">VIEW PORTFOLIO</button>
+  <!-- HOME -->
+  <div class="page" id="homePage">
+    <div class="name">Kelvin<br>Walls</div>
+    <nav>
+      <a href="bio.html">Bio</a>
+      <a href="#" id="worksLink">Works</a>
+      <a href="publications.html">Publications</a>
+    </nav>
+  </div>
+
+  <!-- WORKS OVERLAY -->
+  <div class="works-overlay" id="worksOverlay">
+    <button class="back-btn" id="backBtn">&#8592; Back</button>
+    <div class="works-list">
+      <a class="work-item">
+        <span class="work-title">SPRING SKETCHES</span>
+        <span class="work-year">2025</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">ÉTUDE FOR SMOKE DETECTOR AND ELECTRONICS</span>
+        <span class="work-year">2025</span>
+      </a>
+      <a href="fear.html" class="work-item">
+        <span class="work-title">She is my fear and fear is a bone</span>
+        <span class="work-year">2023</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">IIVIIIII_abstractions</span>
+        <span class="work-year">2022</span>
+      </a>
+      <a href="house.html" class="work-item">
+        <span class="work-title">A House Is Not a Home</span>
+        <span class="work-year">2022</span>
+      </a>
+      <a href="2020w.html" class="work-item">
+        <span class="work-title">2020 Weathering</span>
+        <span class="work-year">2021–2022</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">Additive Synthesis of a Climate Crisis</span>
+        <span class="work-year">2021</span>
+      </a>
+      <a href="piezo.html" class="work-item">
+        <span class="work-title">Piezo Earring</span>
+        <span class="work-year">2020</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">Anaerobic Karaoke</span>
+        <span class="work-year">2019–2023</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">Untitled</span>
+        <span class="work-year">2019</span>
+      </a>
+      <a href="isslp.html" class="work-item">
+        <span class="work-title">Instructions for Stealing a Sol LeWitt Piece</span>
+        <span class="work-year">2018</span>
+      </a>
+      <a class="work-item">
+        <span class="work-title">50-45</span>
+        <span class="work-year">2018</span>
+      </a>
     </div>
   </div>
 
+  <script>
+    const worksLink = document.getElementById('worksLink');
+    const homePage = document.getElementById('homePage');
+    const worksOverlay = document.getElementById('worksOverlay');
+    const backBtn = document.getElementById('backBtn');
+    const bgVideo = document.querySelector('.bg-video');
 
+    function openWorks() {
+      homePage.classList.add('hidden');
+      worksOverlay.classList.add('visible');
+      bgVideo.classList.add('dimmed');
+      worksOverlay.scrollTop = 0;
+    }
 
-  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script> -->
-  <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js" charset="utf-8"></script>
-  <!-- <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
+    function closeWorks() {
+      worksOverlay.classList.remove('visible');
+      homePage.classList.remove('hidden');
+      bgVideo.classList.remove('dimmed');
+      history.replaceState(null, '', window.location.pathname);
+    }
 
+    worksLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openWorks();
+    });
 
+    backBtn.addEventListener('click', closeWorks);
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    if (window.location.hash === '#works') {
+      openWorks();
+    }
+  </script>
+
 </body>
-
 </html>
-
-
-<!-- <!DOCTYPE html>
-<div id="container"></div>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script scatter.js type="module"> -->

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>She is my fear and fear is a bone</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F5F5;
+      color: #111;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      padding: 26px 48px;
+      border-bottom: 1px solid #d9d9d9;
+      flex-shrink: 0;
+    }
+
+    .nav a {
+      color: #444;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav a:hover { color: #111; }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      display: grid;
+      grid-template-columns: 8fr 9fr;
+      grid-template-rows: 1fr;
+      gap: 0;
+      flex: 1;
+      min-height: 0;
+      padding: 0 46px 46px;
+    }
+
+    /* ── SLIDESHOW ── */
+    .slideshow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-right: 48px;
+      border-right: 1px solid #d9d9d9;
+      padding-top: 38px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Portrait-only title (above video) */
+    .title-portrait {
+      display: none;
+    }
+
+    .video-container {
+      position: relative;
+      background: transparent;
+      flex: 1;
+      min-height: 0;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .slide-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .slide-btn {
+      background: none;
+      border: 1px solid #888;
+      color: #111;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    .slide-btn:hover:not(:disabled) { border-color: #111; }
+    .slide-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .slide-counter {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: #555;
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #999;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .dot.active { background: #111; }
+
+    /* ── CAPTION PANEL ── */
+    .caption-panel {
+      padding: 48px 0 48px 88px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollable caption area */
+    .caption-scroll-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .caption-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding: 48px 24px 48px 0;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Title + caption centered together */
+    .caption-content {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .caption-content .piece-title {
+      font-size: 32px;
+      font-style: italic;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .caption-content .piece-year {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: #555;
+      margin-bottom: 36px;
+    }
+
+    /* Fade-out indicator */
+    .scroll-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, #F5F5F5);
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .scroll-fade.hidden { opacity: 0; }
+
+    .caption-text {
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #111;
+    }
+
+    .caption-text a {
+      color: #333;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .caption-text a:hover { color: #111; }
+
+    /* ── PORTRAIT ── */
+    @media (orientation: portrait) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .nav { padding: 20px 24px; }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        padding: 0 24px 48px;
+        min-height: unset;
+      }
+
+      .slideshow {
+        flex: none;
+        min-height: unset;
+        overflow: visible;
+        padding-right: 0;
+        padding-top: 28px;
+        padding-bottom: 24px;
+        gap: 14px;
+        border-right: none;
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .video-container {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .title-portrait {
+        display: block;
+        flex-shrink: 0;
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .title-portrait .piece-title {
+        font-size: 30px;
+        font-style: italic;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .title-portrait .piece-year {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        color: #555;
+      }
+
+      .caption-panel {
+        flex: none;
+        min-height: unset;
+        padding: 32px 0 0;
+      }
+
+      .title-landscape { display: none; }
+
+      .caption-scroll-wrap {
+        position: static;
+        overflow: visible;
+      }
+
+      .caption-scroll {
+        height: auto;
+        overflow-y: visible;
+        padding: 0;
+        max-width: 100%;
+        display: block;
+      }
+
+      .caption-content {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .scroll-fade { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html#works">&#8592; Works</a>
+  </nav>
+
+  <main class="content">
+
+    <section class="slideshow">
+
+      <div class="title-portrait">
+        <h1 class="piece-title">She is my fear and fear is a bone</h1>
+        <div class="piece-year">2023</div>
+      </div>
+
+      <div class="video-container">
+        <video id="mainVideo" controls autoplay muted playsinline>
+          <source src="media/fear/FearIsABone1.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <div class="slide-dots" id="dots"></div>
+
+      <div class="slide-controls">
+        <button class="slide-btn" id="prevBtn" disabled>Prev</button>
+        <span class="slide-counter" id="counter">1 / 6</span>
+        <button class="slide-btn" id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <aside class="caption-panel">
+
+      <!-- Scrollable: title + caption, centered together in landscape -->
+      <div class="caption-scroll-wrap">
+        <div class="caption-scroll" id="captionScroll">
+          <div class="caption-content">
+            <div class="title-landscape">
+              <h1 class="piece-title">She is my fear and fear is a bone</h1>
+              <div class="piece-year">2023</div>
+            </div>
+            <p class="caption-text">
+              &#8220;She is my fear and fear is a bone&#8221; is an experimental short film by Kylie Park (<a href="https://www.instagram.com/kymlpq/" target="_blank">@kymlpq</a>). The filmmaker asked random people to contribute a sentence or two to build a narrative. This film was inspired by the results of that process. I was commissioned to provide music for the film using vocal recordings of the narrative. The only condition was that I must obscure the narrative beyond recognition. The majority of sounds heard in my score are manipulations of the voice recordings I was provided with.
+              <br><br>
+              Full video available at:<br>
+              <a href="https://kylieheewonpark.squarespace.com/short-film/she-is-my-fear-and-fear-is-a-bone" target="_blank">kylieheewonpark.squarespace.com</a>
+            </p>
+          </div>
+        </div>
+        <div class="scroll-fade" id="scrollFade"></div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script>
+    const slides = [
+      'media/fear/FearIsABone1.mp4',
+      'media/fear/FearIsABone2.mp4',
+      'media/fear/FearIsABone3.mp4',
+      'media/fear/FearIsABone4.mp4',
+      'media/fear/FearIsABone5.mp4',
+      'media/fear/FearIsABone6.mp4',
+    ];
+
+    let current = 0;
+    let autoCycle = true;
+    const video = document.getElementById('mainVideo');
+    const videoContainer = document.querySelector('.video-container');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('counter');
+    const dotsEl = document.getElementById('dots');
+    const controlsEl = document.querySelector('.slide-controls');
+
+    function syncControlsWidth() {
+      const w = videoContainer.offsetWidth;
+      if (w > 0) {
+        dotsEl.style.width = w + 'px';
+        controlsEl.style.width = w + 'px';
+      }
+    }
+
+    function updateAspectRatio() {
+      if (video.videoWidth && video.videoHeight) {
+        videoContainer.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+        requestAnimationFrame(syncControlsWidth);
+      }
+    }
+
+    video.addEventListener('loadedmetadata', updateAspectRatio);
+    if (video.readyState >= 1) updateAspectRatio();
+    window.addEventListener('resize', () => requestAnimationFrame(syncControlsWidth));
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => { autoCycle = false; goTo(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    function goTo(index) {
+      current = index;
+      video.src = slides[current];
+      video.play().catch(() => {});
+      update();
+    }
+
+    function update() {
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    // Caption scroll fade
+    const captionScroll = document.getElementById('captionScroll');
+    const scrollFade = document.getElementById('scrollFade');
+
+    function checkFade() {
+      const atBottom = captionScroll.scrollHeight - captionScroll.scrollTop <= captionScroll.clientHeight + 2;
+      scrollFade.classList.toggle('hidden', atBottom);
+    }
+
+    captionScroll.addEventListener('scroll', checkFade);
+    window.addEventListener('resize', checkFade);
+    setTimeout(checkFade, 50);
+
+    video.addEventListener('ended', () => {
+      if (autoCycle) goTo((current + 1) % slides.length);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current - 1 + slides.length) % slides.length);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current + 1) % slides.length);
+    });
+  </script>
+</body>
+</html>
