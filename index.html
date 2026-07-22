@@ -8,7 +8,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #000;
+      background: #BBBEBB;
       color: #ffffff54;
       font-family: Arial, sans-serif;
       height: 100vh;
@@ -158,6 +158,57 @@
       letter-spacing: 0.2em;
       color: #aaa;
     }
+
+    /* ── PUBLICATIONS OVERLAY ── */
+    .pubs-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 48px 56px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+      overflow-y: auto;
+    }
+
+    .pubs-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pub-item {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      transition: opacity 0.2s;
+    }
+
+    .pub-item:last-child {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .pub-item:hover { opacity: 0.3; }
+
+    .pub-title {
+      display: block;
+      font-size: clamp(14px, 2vw, 22px);
+      font-style: italic;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .pub-meta {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #aaa;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -172,8 +223,31 @@
     <nav>
       <a href="bio.html">Bio</a>
       <a href="#" id="worksLink">Works</a>
-      <a href="publications.html">Publications</a>
+      <a href="#" id="pubsLink">Publications</a>
     </nav>
+  </div>
+
+  <!-- PUBLICATIONS OVERLAY -->
+  <div class="pubs-overlay" id="pubsOverlay">
+    <button class="back-btn" id="pubsBackBtn">&#8592; Back</button>
+    <div class="works-list">
+      <a href="https://arxiv.org/abs/2411.08234" target="_blank" class="pub-item">
+        <span class="pub-title">Analyzing pitch content in traditional Ghanaian seperewa songs</span>
+        <span class="pub-meta">Walls K, Roman IR, Van Ert K, Harper C, Adu-Gilmore L · LAMIR 2024</span>
+      </a>
+      <a href="https://ismir2024program.ismir.net/lbd_470.html" target="_blank" class="pub-item">
+        <span class="pub-title">Generative singing style transfer across genres</span>
+        <span class="pub-meta">Bhargava S, Chu E, Lee M, Chen C, Walls K, Steers B, Roman IR · ISMIR 2024</span>
+      </a>
+      <a href="https://arxiv.org/abs/2312.14036" target="_blank" class="pub-item">
+        <span class="pub-title">Total variation in popular rap vocals from 2009–2023: extension of the analysis by Georgieva, Ripollés &amp; McFee</span>
+        <span class="pub-meta">Walls KL, Roman IR, Steers B, Georgieva E · ISMIR 2023</span>
+      </a>
+      <a href="https://online.ucpress.edu/elementa/article/9/1/00016/118297/Reimagining-futuresCollaborations-between-artists" target="_blank" class="pub-item">
+        <span class="pub-title">Reimagining futures: Collaborations between artists, designers, and scientists as a roadmap to help solve the climate crisis</span>
+        <span class="pub-meta">Tosca MG, Galvin A, Gilbert I, Walls KL, Tyler GE, Nastan AM · Elementa 2021</span>
+      </a>
+    </div>
   </div>
 
   <!-- WORKS OVERLAY -->
@@ -233,9 +307,12 @@
 
   <script>
     const worksLink = document.getElementById('worksLink');
+    const pubsLink = document.getElementById('pubsLink');
     const homePage = document.getElementById('homePage');
     const worksOverlay = document.getElementById('worksOverlay');
+    const pubsOverlay = document.getElementById('pubsOverlay');
     const backBtn = document.getElementById('backBtn');
+    const pubsBackBtn = document.getElementById('pubsBackBtn');
     const bgVideo = document.querySelector('.bg-video');
 
     function openWorks() {
@@ -252,16 +329,34 @@
       history.replaceState(null, '', window.location.pathname);
     }
 
-    worksLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      openWorks();
-    });
+    function openPubs() {
+      homePage.classList.add('hidden');
+      pubsOverlay.classList.add('visible');
+      bgVideo.classList.add('dimmed');
+      pubsOverlay.scrollTop = 0;
+    }
 
+    function closePubs() {
+      pubsOverlay.classList.remove('visible');
+      homePage.classList.remove('hidden');
+      bgVideo.classList.remove('dimmed');
+    }
+
+    worksLink.addEventListener('click', (e) => { e.preventDefault(); openWorks(); });
     backBtn.addEventListener('click', closeWorks);
+
+    pubsLink.addEventListener('click', (e) => { e.preventDefault(); openPubs(); });
+    pubsBackBtn.addEventListener('click', closePubs);
 
     if (window.location.hash === '#works') {
       openWorks();
     }
+
+    // Mobile autoplay fallback
+    bgVideo.play().catch(() => {});
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) bgVideo.play().catch(() => {});
+    });
   </script>
 
 </body>
