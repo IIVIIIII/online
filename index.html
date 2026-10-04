@@ -30,6 +30,16 @@
 
     .bg-video.dimmed { filter: brightness(0.25); }
 
+    /* Hide iOS Safari's start-playback button overlay */
+    .bg-video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      -webkit-appearance: none;
+    }
+
+    .bg-video::-webkit-media-controls {
+      display: none !important;
+    }
+
     /* ── HOME ── */
     :root {
       --side-pad: clamp(20px, 5.5vh, 56px);
@@ -213,9 +223,8 @@
 </head>
 <body>
 
-  <video class="bg-video" autoplay muted loop playsinline>
-    <source src="https://res.cloudinary.com/aki2q6sp/video/upload/v1784235219/bg_tewrx2.mp4" type="video/mp4">
-  </video>
+  <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto"
+         src="https://res.cloudinary.com/aki2q6sp/video/upload/v1784235219/bg_tewrx2.mp4"></video>
 
   <!-- HOME -->
   <div class="page" id="homePage">
@@ -353,12 +362,23 @@
     }
 
     // Mobile autoplay fallback
-    bgVideo.play().catch(() => {});
+    function tryPlay() {
+      bgVideo.muted = true;
+      bgVideo.defaultMuted = true;
+      bgVideo.setAttribute('muted', '');
+      bgVideo.playsInline = true;
+      return bgVideo.play().catch(() => {});
+    }
+
+    tryPlay();
+    bgVideo.addEventListener('loadeddata', tryPlay, { once: true });
+    bgVideo.addEventListener('canplay', tryPlay, { once: true });
+    window.addEventListener('pageshow', tryPlay);
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) bgVideo.play().catch(() => {});
+      if (!document.hidden) tryPlay();
     });
-    ['touchstart', 'touchend', 'click'].forEach(evt => {
-      document.addEventListener(evt, () => bgVideo.play().catch(() => {}), { once: true });
+    ['touchstart', 'touchend', 'click', 'scroll'].forEach(evt => {
+      document.addEventListener(evt, tryPlay, { once: true, passive: true });
     });
   </script>
 
