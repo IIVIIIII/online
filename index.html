@@ -40,6 +40,23 @@
       display: none !important;
     }
 
+    /* Still frame painted over the video — covers iOS's play button
+       when autoplay is blocked. Fades out once playback starts. */
+    .bg-poster {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.75);
+      pointer-events: none;
+      transition: opacity 0.6s, filter 0.4s;
+    }
+
+    .bg-poster.dimmed { filter: brightness(0.25); }
+    .bg-poster.played { opacity: 0; }
+
     /* ── HOME ── */
     :root {
       --side-pad: clamp(20px, 5.5vh, 56px);
@@ -225,6 +242,7 @@
 
   <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto"
          src="https://res.cloudinary.com/aki2q6sp/video/upload/v1784235219/bg_tewrx2.mp4"></video>
+  <img class="bg-poster" src="bg-poster.jpg" alt="" aria-hidden="true">
 
   <!-- HOME -->
   <div class="page" id="homePage">
@@ -323,32 +341,41 @@
     const backBtn = document.getElementById('backBtn');
     const pubsBackBtn = document.getElementById('pubsBackBtn');
     const bgVideo = document.querySelector('.bg-video');
+    const bgPoster = document.querySelector('.bg-poster');
+
+    function setDimmed(on) {
+      bgVideo.classList.toggle('dimmed', on);
+      bgPoster.classList.toggle('dimmed', on);
+    }
+
+    // Reveal the video only once it is genuinely playing
+    bgVideo.addEventListener('playing', () => bgPoster.classList.add('played'));
 
     function openWorks() {
       homePage.classList.add('hidden');
       worksOverlay.classList.add('visible');
-      bgVideo.classList.add('dimmed');
+      setDimmed(true);
       worksOverlay.scrollTop = 0;
     }
 
     function closeWorks() {
       worksOverlay.classList.remove('visible');
       homePage.classList.remove('hidden');
-      bgVideo.classList.remove('dimmed');
+      setDimmed(false);
       history.replaceState(null, '', window.location.pathname);
     }
 
     function openPubs() {
       homePage.classList.add('hidden');
       pubsOverlay.classList.add('visible');
-      bgVideo.classList.add('dimmed');
+      setDimmed(true);
       pubsOverlay.scrollTop = 0;
     }
 
     function closePubs() {
       pubsOverlay.classList.remove('visible');
       homePage.classList.remove('hidden');
-      bgVideo.classList.remove('dimmed');
+      setDimmed(false);
     }
 
     worksLink.addEventListener('click', (e) => { e.preventDefault(); openWorks(); });
