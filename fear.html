@@ -246,6 +246,26 @@
       margin-bottom: 36px;
     }
 
+    /* Static link block beneath the scrolling caption, sharing its column.
+       flex-shrink: 0 takes its space out of the scroll area, so caption +
+       link together occupy exactly what the caption did on its own. */
+    .caption-link {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid #d9d9d9;
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #111;
+    }
+
+    .caption-link a {
+      color: #111;
+      transition: opacity 0.2s;
+    }
+
+    .caption-link a:hover { opacity: 0.5; }
+
     .scroll-fade {
       position: absolute;
       bottom: 0;
@@ -395,10 +415,11 @@
             </div>
             <p class="caption-text">
               &#8220;She is my fear and fear is a bone&#8221; is an experimental short film by Kylie Park. The filmmaker asked random people to contribute a sentence or two to build a narrative. This film was inspired by the results of that process. I was commissioned to provide music for the film using vocal recordings of the narrative. The only condition was that I must obscure the narrative beyond recognition. The majority of sounds heard in my score are manipulations of the voice recordings I was provided with.
-              <br><br>
+            </p>
+            <div class="caption-link">
               Full video available at:<br>
               <a href="https://filmfreeway.com/Sheismyfearandfearisabone" target="_blank">https://filmfreeway.com/Sheismyfearandfearisabone</a>
-            </p>
+            </div>
           </div>
         </div>
         <div class="scroll-fade" id="scrollFade"></div>

@@ -170,7 +170,7 @@
       --caption-w: 600px;   /* text column cap */
       --sb-w: 6px;          /* scrollbar width */
       --text-pad: 24px;     /* gap between text and scrollbar */
-      padding: 62px calc(var(--side) - var(--shift)) 58px calc(var(--side) + var(--shift));
+      padding: 62px calc(var(--side) - var(--shift)) 50px calc(var(--side) + var(--shift));
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -244,6 +244,30 @@
       background: #8a8a8a;
     }
 
+
+    /* Static link block beneath the scrolling caption, sharing its column.
+       flex-shrink: 0 takes its space out of the scroll area, so caption +
+       link together occupy exactly what the caption did on its own. */
+    .caption-link {
+      flex-shrink: 0;
+      width: 100%;
+      max-width: var(--caption-w);
+      margin-inline: auto;
+      margin-top: 20px;
+      padding: 18px var(--text-pad) 0 0;
+      border-top: 1px solid #d9d9d9;
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.85;
+      color: #111;
+    }
+
+    .caption-link a {
+      color: #111;
+      transition: opacity 0.2s;
+    }
+
+    .caption-link a:hover { opacity: 0.5; }
 
     /* Fade-out indicator */
     .scroll-fade {
@@ -422,12 +446,14 @@
 
             <span class="act-label">Act III</span>
             <p>A sampler was created for Act III to simulate random walking paces within a set range. This allowed for an indeterminate composition process before knowing the exact step times of the models. It also served as a way to test which general tempos the models should be instructed to walk at. Ultimately, Act III conveys the multiplicity of the singular self after having been redefined many times through travel. These selves begin as separate, but gradually expand and overlap until they are indistinguishable.</p>
-
-            <p style="margin-top: 28px;">Full video available at:<br>
-            <a href="https://www.samfissell.com/projects/hinh" target="_blank">samfissell.com/projects/hinh</a></p>
           </div>
         </div>
         <div class="scroll-fade" id="scrollFade"></div>
+      </div>
+
+      <div class="caption-link">
+        Full project available at:<br>
+        <a href="https://www.samfissell.com/projects/hinh" target="_blank">samfissell.com/projects/hinh</a>
       </div>
 
     </aside>

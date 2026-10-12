@@ -170,7 +170,7 @@
       --caption-w: 600px;   /* text column cap */
       --sb-w: 6px;          /* scrollbar width */
       --text-pad: 24px;     /* gap between text and scrollbar */
-      padding: 62px calc(var(--side) - var(--shift)) 58px calc(var(--side) + var(--shift));
+      padding: 62px calc(var(--side) - var(--shift)) 50px calc(var(--side) + var(--shift));
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -244,6 +244,18 @@
       background: #8a8a8a;
     }
 
+
+    /* Closes off the scrolling caption. Same rule house gets from the top
+       border of its link block; this page has no link, so it's bare.
+       flex-shrink: 0 — the scroll area above gives up the space. */
+    .caption-rule {
+      flex-shrink: 0;
+      width: 100%;
+      max-width: var(--caption-w);
+      margin-inline: auto;
+      margin-top: 20px;
+      border-top: 1px solid #d9d9d9;
+    }
 
     /* Fade-out indicator */
     .scroll-fade {
@@ -444,6 +456,8 @@
         </div>
         <div class="scroll-fade" id="scrollFade"></div>
       </div>
+
+      <div class="caption-rule"></div>
 
     </aside>
 
