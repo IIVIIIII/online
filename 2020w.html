@@ -43,23 +43,56 @@
       gap: 0;
       flex: 1;
       min-height: 0;
-      padding: 0 46px 46px;
+      padding: 0 46px 0;
+    }
+
+    /* Divider closing off the vertical rule. No fill or label — these
+       pages have nothing below the fold. */
+    .screen-rule {
+      flex-shrink: 0;
+      /* Spacer only — no horizontal rule, since there's nothing below the
+         fold here. Holds the bottom gap .content gave up. */
+      height: 54px;
+      position: relative;
+    }
+
+    /* Carries the column divider down to the bottom of the page. Drawn
+       here rather than extending .slideshow's border, because .slideshow
+       has overflow:hidden and would clip anything below it. Nothing moves.
+       x = .content's 46px left padding + the 8fr column, less the 1px rule. */
+    .screen-rule::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(46px + (100% - 92px) * 8 / 17 - 1px);
+      width: 1px;
+      background: #d9d9d9;
     }
 
     /* ── SLIDESHOW ── */
     .slideshow {
+      /* Nudges the dots + counter + buttons group as a unit, keeping the
+         button tops flush with the dots. Raise to move it further down. */
+      --group-shift: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 20px;
-      padding-right: 48px;
+      /* 45 + 1px border = 46px, matching .content's left padding, so the
+         video centres between the window edge and the divider. */
+      padding-right: 45px;
       border-right: 1px solid #d9d9d9;
-      padding-top: 38px;
+      padding-top: 52px;
+      /* Lifts the column's bottom edge; the video (flex: 1) absorbs it. */
+      padding-bottom: 10px;
       min-height: 0;
       overflow: hidden;
     }
 
-    .title-portrait { display: none; }
+    .title-portrait {
+      display: none;
+    }
 
     .video-container {
       position: relative;
@@ -82,6 +115,9 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      /* Lifts the counter AND buttons together. With the button's own -9px,
+         the button top lands flush with the top of the dots. */
+      transform: translateY(calc(-16px + var(--group-shift)));
     }
 
     .slide-btn {
@@ -95,6 +131,9 @@
       text-transform: uppercase;
       font-family: Arial, sans-serif;
       transition: border-color 0.2s;
+      /* Button ~32px tall vs the counter's ~14px line box; centred together
+         it hangs ~9px lower. Lift so the bottom edges meet. */
+      transform: translateY(-9px);
     }
 
     .slide-btn:hover:not(:disabled) { border-color: #111; }
@@ -110,6 +149,7 @@
       display: flex;
       gap: 6px;
       justify-content: center;
+      transform: translateY(var(--group-shift));
     }
 
     .dot {
@@ -125,7 +165,12 @@
 
     /* ── CAPTION PANEL ── */
     .caption-panel {
-      padding: 48px 0 48px 88px;
+      --side: 72px;         /* width: lower to widen, raise to narrow */
+      --shift: 30px;        /* nudge the whole block right, width unchanged */
+      --caption-w: 600px;   /* text column cap */
+      --sb-w: 6px;          /* scrollbar width */
+      --text-pad: 24px;     /* gap between text and scrollbar */
+      padding: 62px calc(var(--side) - var(--shift)) 58px calc(var(--side) + var(--shift));
       min-height: 0;
       display: flex;
       flex-direction: column;
@@ -161,18 +206,53 @@
 
     .caption-scroll {
       height: 100%;
-      overflow-y: auto;
-      padding-right: 24px;
+      overflow-y: scroll;
+      padding-right: var(--text-pad);
       padding-bottom: 48px;
-      max-width: 600px;
+      max-width: var(--caption-w);
+      margin-inline: auto;
     }
+
+    /* Firefox only. These must NOT apply in Chrome: since v121 a non-auto
+       scrollbar-width/color disables ::-webkit-scrollbar entirely, which
+       hands the scrollbar back to macOS auto-hiding. */
+    @supports not selector(::-webkit-scrollbar) {
+      .caption-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #a8a8a8 #e4e4e4;
+      }
+    }
+
+    /* Always-visible scrollbar: styling ::-webkit-scrollbar opts out of
+       macOS overlay scrollbars, so the track and thumb stay on screen. */
+    .caption-scroll::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: var(--sb-w);
+    }
+
+    .caption-scroll::-webkit-scrollbar-track {
+      background: #e4e4e4;
+      border-radius: 3px;
+    }
+
+    .caption-scroll::-webkit-scrollbar-thumb {
+      background: #a8a8a8;
+      border-radius: 3px;
+    }
+
+    .caption-scroll::-webkit-scrollbar-thumb:hover {
+      background: #8a8a8a;
+    }
+
 
     /* Fade-out indicator */
     .scroll-fade {
       position: absolute;
       bottom: 0;
-      left: 0;
-      right: 0;
+      /* Track .caption-scroll: same width (less the scrollbar) and the same
+         left offset, so the fade never covers the thumb. */
+      left: calc((100% - min(var(--caption-w), 100%)) / 2);
+      width: calc(min(var(--caption-w), 100%) - var(--sb-w) - 4px);
       height: 80px;
       background: linear-gradient(to bottom, transparent, #F5F5F5);
       pointer-events: none;
@@ -209,9 +289,20 @@
       margin-bottom: 8px;
     }
 
+    .caption-text a {
+      color: #333;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .caption-text a:hover { color: #111; }
+
     /* ── PORTRAIT ── */
     @media (orientation: portrait) {
-      body { height: auto; overflow: auto; }
+      body {
+        height: auto;
+        overflow: auto;
+      }
 
       .nav { padding: 20px 24px; }
 
@@ -248,7 +339,7 @@
       }
 
       .title-portrait .piece-title {
-        font-size: 30px;
+        font-size: 32px;
         font-style: italic;
         line-height: 1.2;
         margin-bottom: 6px;
@@ -259,8 +350,6 @@
         letter-spacing: 0.2em;
         color: #555;
       }
-
-      .title-landscape { display: none; }
 
       .caption-panel {
         flex: none;
@@ -284,6 +373,9 @@
       }
 
       .scroll-fade { display: none; }
+
+      /* no column divider in the stacked layout */
+      .screen-rule::before { display: none; }
     }
   </style>
 </head>
@@ -292,6 +384,7 @@
   <nav class="nav">
     <a href="index.html#works">&#8592; Works</a>
   </nav>
+
 
   <main class="content">
 
@@ -355,6 +448,10 @@
     </aside>
 
   </main>
+
+  <div class="screen-rule"></div>
+
+
 
   <script>
     const slides = [
@@ -444,6 +541,7 @@
       autoCycle = false;
       goTo((current + 1) % slides.length);
     });
+
   </script>
 </body>
 </html>
