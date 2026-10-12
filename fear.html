@@ -510,6 +510,15 @@
       if (autoCycle) goTo((current + 1) % slides.length);
     });
 
+    prevBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current - 1 + slides.length) % slides.length);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      autoCycle = false;
+      goTo((current + 1) % slides.length);
+    });
   </script>
 </body>
 </html>
